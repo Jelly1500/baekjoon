@@ -1,6 +1,3 @@
-from collections import deque
-from datetime import datetime
-
 a = []
 ans = []
 arg = list(input().split(" "))
