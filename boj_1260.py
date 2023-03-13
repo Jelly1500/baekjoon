@@ -1,27 +1,57 @@
-class Node:
-    def __init__(self, next):
-        self.next = next
+import sys
+input = sys.stdin.readline
 
-s = []
-visited = [0] * 1001
-
-def dfs(nodes, v):
-    s.append(v)
-    visited[v] = 1
-    if len(nodes[v]) == 0:
-        return
-    for i in nodes[v]:
-        if not visited[i.next]:
-            visited[i.next] = 1
-            
-            dfs(nodes, i.next)
-
+class Graph:
+    def __init__(self, num_nodes):
+        self.adj_list = {} # 인접 리스트 딕셔너리
+        self.num_nodes = num_nodes # 노드 수
+        self.visited = [0] * (num_nodes+1)
+        for i in range(1, num_nodes + 1):
+            self.adj_list[i] = [] # 각 노드에 대해 빈 리스트 할당
         
-n, m, v = map(int, input().split())
-nodes = [[] for i in range(n+1)]
+    def initVisit(self):
+        for i in range(1, self.num_nodes + 1):
+            self.visited[i] = 0
+
+    def add_edge(self, u, v):
+        self.adj_list[u].append(v) # u에서 v로 가는 엣지 추가
+        self.adj_list[v].append(u) # v에서 u로 가는 엣지 추가(양방향 전용)
+    
+    def sort_nodes(self):
+        for i in range(1, self.num_nodes+1):
+            self.adj_list[i].sort()
+
+    def DFS(self, start):
+        self.visited[start] = 1
+        print(start, end = " ")
+        for i in self.adj_list[start]:
+            if self.visited[i] == 0:
+                self.visited[i] = 1
+                self.DFS(i)
+        return
+
+    def BFS(self, start):
+        if self.visited[start] == 0:
+            self.visited[start] = 1
+            print(start, end=" ")
+        nextList = []
+        for i in self.adj_list[start]:
+            if self.visited[i] == 0:
+                self.visited[i] = 1
+                print(i, end=" ")
+                nextList.append(i)
+        for i in nextList:
+            self.BFS(i)
+        return
+    
+n,m,v = map(int, input().split())
+graph = Graph(n)
 for i in range(m):
     start, next = map(int, input().split())
-    nodes[start].append(Node(next))
+    graph.add_edge(start, next)
 
-dfs(nodes, v)
-print(s)
+graph.sort_nodes()
+graph.DFS(v)
+print()
+graph.initVisit()
+graph.BFS(v)
